@@ -1,0 +1,34 @@
+@charset "utf-8";
+
+/*全体のスタイル*/
+body {
+    font-family: "Hiragino kaku Gothic ProN", Meiryo, sans-serif;
+    background-color: #eafaf1;
+    /* ミントグリーン */
+    color: #333;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+}
+
+/* ヘッダー */
+header {
+    background-color: #cdeedb;
+    padding: 1rem;
+    text-align: center;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+header h1 {
+    margin: 0;
+    font-size: 1.5rem;
+    color: #2b6653;
+}
+
+header p {
+    margin: 0.2rem 0 0;
+    font-size: 0.95rem;
+    color: #467c6b;
+}
