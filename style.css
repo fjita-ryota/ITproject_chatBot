@@ -3,8 +3,7 @@
 /*全体のスタイル*/
 body {
     font-family: "Hiragino kaku Gothic ProN", Meiryo, sans-serif;
-    background-color: #eafaf1;
-    /* ミントグリーン */
+    background-color: #eafaf1; /* ミントグリーン */
     color: #333;
     margin: 0;
     padding: 0;
@@ -31,4 +30,73 @@ header p {
     margin: 0.2rem 0 0;
     font-size: 0.95rem;
     color: #467c6b;
+}
+
+/* チャットエリアのスタイル (追加) */
+main#chat-area {
+    flex-grow: 1; /* 残りのスペースを全て占有 */
+    padding: 1rem;
+    overflow-y: auto; /* メッセージが増えたらスクロール */
+    background-color: #ffffff;
+    border-radius: 8px;
+    margin: 1rem;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+}
+
+/* メッセージのスタイル (追加) */
+.message {
+    max-width: 70%;
+    padding: 0.8rem 1rem;
+    border-radius: 18px;
+    margin-bottom: 0.8rem;
+    line-height: 1.5;
+    word-wrap: break-word; /* 長い単語でも折り返す */
+}
+
+.message.user {
+    background-color: #d1e7dd; /* ユーザーのメッセージは薄い緑 */
+    color: #333;
+    margin-left: auto; /* 右寄せ */
+    border-bottom-right-radius: 4px; /* 角を少しだけ変える */
+}
+
+.message.bot {
+    background-color: #f0f0f0; /* ボットのメッセージは薄いグレー */
+    color: #333;
+    margin-right: auto; /* 左寄せ */
+    border-bottom-left-radius: 4px; /* 角を少しだけ変える */
+}
+
+/* フォームのスタイル (追加) */
+form#chat-form {
+    display: flex;
+    padding: 1rem;
+    background-color: #cdeedb;
+    box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.1);
+    align-items: center;
+}
+
+form#chat-form input[type="text"] {
+    flex-grow: 1;
+    padding: 0.8rem;
+    border: 1px solid #a8d5c0;
+    border-radius: 20px;
+    font-size: 1rem;
+    outline: none;
+    margin-right: 0.8rem;
+}
+
+form#chat-form button[type="submit"] {
+    background-color: #2b6653;
+    color: white;
+    border: none;
+    padding: 0.8rem 1.5rem;
+    border-radius: 20px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+form#chat-form button[type="submit"]:hover {
+    background-color: #1e4d3f;
 }
