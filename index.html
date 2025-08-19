@@ -3,24 +3,167 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>新しいチャット（訂正版）</title>
+    <title>新しい全肯定チャット</title>
     <link rel="stylesheet" href="style.css">
+    <style>
+        /* 追加のスタイル */
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .container h1 {
+            font-size: 3rem;
+            color: #2b6653;
+            margin-bottom: 1rem;
+        }
+
+        .container p {
+            font-size: 1.5rem;
+            color: #467c6b;
+            margin-bottom: 2rem;
+        }
+
+        .container .input-group {
+            width: 100%;
+            max-width: 600px;
+        }
+
+        /* 選択肢の色が変わるアニメーションを追加 */
+        body {
+            transition: background-color 0.5s ease;
+        }
+
+        .category-label {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #2b6653;
+            margin-bottom: 2rem;
+        }
+
+        .category-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 1.5rem;
+        }
+
+        .category-buttons button {
+            background-color: #cdeedb;
+            color: #2b6653;
+            border: 2px solid #2b6653;
+            padding: 1.5rem 2.5rem;
+            border-radius: 12px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            flex-grow: 1;
+            max-width: 250px;
+        }
+
+        .category-buttons button:hover {
+            background-color: #2b6653;
+            color: white;
+            transform: translateY(-3px);
+            box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+        }
+        
+        /* 選択されたボタンのスタイル */
+        .category-buttons button.selected {
+            background-color: #2b6653;
+            color: white;
+        }
+
+        #start-chat-button {
+            background-color: #cdeedb; /* デフォルトの色を薄い緑に */
+            color: #467c6b; /* デフォルトの色を濃い緑に */
+            border: none;
+            padding: 0.8rem 2rem;
+            border-radius: 20px;
+            font-size: 1rem;
+            cursor: not-allowed; /* 初期状態ではクリック不可に見せる */
+            transition: background-color 0.3s ease, color 0.3s ease, transform 0.3s ease;
+            margin-top: 3rem;
+        }
+
+        #start-chat-button.active {
+            background-color: #2b6653; /* 選択後の色を濃い緑に */
+            color: white;
+            cursor: pointer;
+        }
+
+        #start-chat-button.active:hover {
+            background-color: #1e4d3f;
+            transform: scale(1.05);
+        }
+    </style>
 </head>
 <body>
-    <header>
-        <h1>新しい全肯定チャット（訂正版）</h1>
-        <p>どんなお悩みでも、私が肯定的に受け止めます！</p>
-    </header>
+    <div class="container">
+        <h1>ようこそ！</h1>
+        <p>あなたの悩みを、私に話してみませんか？</p>
 
-    <main id="chat-area"></main>
+        <div class="input-group">
+            <div id="category-label" class="category-label">どんなことで悩んでいますか？（HARMの法則）</div>
+            <div class="category-buttons">
+                <button class="category-button" data-value="health">H (Health - 健康)</button>
+                <button class="category-button" data-value="ambition">A (Ambition - 夢、将来)</button>
+                <button class="category-button" data-value="relation">R (Relation - 人間関係)</button>
+                <button class="category-button" data-value="money">M (Money - お金)</button>
+            </div>
+        </div>
+        <button id="start-chat-button">相談を始める</button>
+    </div>
 
-    <form id="chat-form">
-        <input type="text" id="user-input" placeholder="あなたの悩みを書いてください" required />
-        <button type="submit">送信</button>
-    </form>
+    <script>
+        const body = document.body;
+        const startButton = document.getElementById('start-chat-button');
+        const categoryButtons = document.querySelectorAll('.category-button');
 
-    <script src="config.js"></script>
-    <script src="script.js"></script> </body>
+        const colors = {
+            'default': '#eafaf1',
+            'health': '#fff3f3', /* ★修正: 健康の背景色をより見やすく */
+            'ambition': '#f3f3ff', /* ★修正: 夢の背景色をより見やすく */
+            'relation': '#f3f3f3', /* ★修正: 人間関係の背景色をより見やすく */
+            'money': '#fffaf3' /* ★修正: お金の背景色をより見やすく */
+        };
+
+        let selectedCategory = null;
+
+        categoryButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                // すでに選択されているボタンがあれば、スタイルをリセット
+                categoryButtons.forEach(btn => btn.classList.remove('selected'));
+                
+                // 新しいボタンに「選択済み」スタイルを追加
+                button.classList.add('selected');
+                
+                // 選択されたカテゴリを保存
+                selectedCategory = button.dataset.value;
+
+                // 背景色を変更
+                body.style.backgroundColor = colors[selectedCategory];
+
+                // ★追加: 選択が完了したら、ボタンをアクティブにする
+                startButton.classList.add('active');
+            });
+        });
+
+        // ボタンクリックでページ遷移
+        startButton.addEventListener('click', () => {
+            if (!selectedCategory) {
+                alert('悩みのカテゴリを選択してください！');
+                return;
+            }
+            window.location.href = `chat.html?category=${encodeURIComponent(selectedCategory)}`;
+        });
+    </script>
+</body>
 </html>
-
-

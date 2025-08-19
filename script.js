@@ -1,7 +1,39 @@
-// script.js
+// script.js (chat.html で読み込まれるファイル)
+
 const chatForm = document.getElementById("chat-form");
 const chatArea = document.getElementById("chat-area");
 const userInput = document.getElementById("user-input");
+const currentCategoryDisplay = document.getElementById("current-category");
+
+// カテゴリ変更機能の要素
+const changeCategoryButton = document.getElementById("change-category-button");
+const categorySelectionModal = document.getElementById("category-selection-modal");
+const modalButtons = document.querySelectorAll(".modal-button");
+const closeModalButton = document.getElementById("close-modal");
+
+// URLからカテゴリを取得し、初期値を設定
+const urlParams = new URLSearchParams(window.location.search);
+let currentCategory = urlParams.get('category'); // letに変更
+
+// カテゴリ名を表示するためのマッピング
+const categoryNames = {
+    "health": "健康の悩み",
+    "ambition": "夢や将来の悩み",
+    "relation": "人間関係の悩み",
+    "money": "お金の悩み"
+};
+
+const initialMessage = currentCategory ? 
+    `承知しました。${categoryNames[currentCategory]}についてですね。` : 
+    'どんなお悩みでも、私が肯定的に受け止めます！';
+
+// ページ読み込み時に最初のメッセージと現在のカテゴリを表示
+window.addEventListener('load', () => {
+    addMessage(initialMessage, 'bot');
+    if (currentCategory) {
+        currentCategoryDisplay.innerText = `現在の相談：${categoryNames[currentCategory]}`;
+    }
+});
 
 // メッセージを表示する関数
 function addMessage(message, sender = "user") {
@@ -9,7 +41,7 @@ function addMessage(message, sender = "user") {
     msg.className = `message ${sender}`;
     msg.innerText = message;
     chatArea.appendChild(msg);
-    chatArea.scrollTop = chatArea.scrollHeight; // 自動スクロール
+    chatArea.scrollTop = chatArea.scrollHeight; 
 }
 
 // 送信イベント
@@ -18,16 +50,14 @@ chatForm.addEventListener("submit", async (e) => {
     const text = userInput.value.trim();
     if (!text) return;
 
-    addMessage(text, "user"); // ユーザーの入力を表示
+    addMessage(text, "user"); 
     userInput.value = "";
 
-    addMessage("考え中だよ", "bot"); // 一時メッセージ
+    addMessage("考え中だよ", "bot");
 
     try {
-        // Gemini の返事を貰う
-        const response = await getGeminiReply(text);
+        const response = await getGeminiReply(text, currentCategory); 
 
-        // 考え中を消して、返事を表示
         if (chatArea.lastChild && chatArea.lastChild.innerText === "考え中だよ") {
             chatArea.lastChild.remove();
         }
@@ -42,17 +72,12 @@ chatForm.addEventListener("submit", async (e) => {
 });
 
 // Gemini からの返答を取得する関数
-async function getGeminiReply(userMessage) {
-    // ★★★ ここを、コンソールで確認した正しいモデル名に書き換える ★★★
-    // 例: "gemini-1.0-pro" または "gemini-1.0-pro-latest" など
-// script.js の getGeminiReply 関数内
-
- const CORRECT_MODEL_NAME = "gemini-1.5-flash";
+async function getGeminiReply(userMessage, category) { 
+    const CORRECT_MODEL_NAME = "gemini-1.5-flash";
 
     const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/${CORRECT_MODEL_NAME}:generateContent?key=${GEMINI_API_KEY}`;
 
-    // プロンプトエンジニアリング: 全肯定カウンセラーとしての役割を設定
-    const prompt = `あなたは共感的でやさしいカウンセラーです。「うんうん」「わかるよ」「つらかったね」など全肯定して励ましてください。ユーザーの悩みは次の通りです。\n\nユーザー: ${userMessage}`;
+    const prompt = `あなたは共感的でやさしいカウンセラーです。ユーザーは現在、**${categoryNames[category]}**に関する悩みを持っています。どんな悩みも否定せず、ただ受け入れ、共感し、温かい言葉で励ますことに徹してください。アドバイスや解決策は一切提示せず、ユーザーの感情に寄り添い、安心感を与えることに集中してください。ユーザーの悩みは次の通りです。\n\nユーザー: ${userMessage}`;
 
     const body = {
         contents: [
@@ -62,9 +87,9 @@ async function getGeminiReply(userMessage) {
             }
         ],
         generationConfig: {
-            temperature: 0.8 // 応答の創造性を制御 (0.0から1.0)
+            temperature: 0.8
         },
-        safetySettings: [ // 安全性に関する設定（必要に応じて調整）
+        safetySettings: [
             {
                 category: "HARM_CATEGORY_HARASSMENT",
                 threshold: "BLOCK_NONE"
@@ -108,34 +133,37 @@ async function getGeminiReply(userMessage) {
     }
 }
 
-// script.js (一時的に追加するコード)
 
-// ここにあなたのGemini APIキーを貼り付けてください
-const GEMINI_API_KEY = "AIzaSyAafVcU0UyfgLvrbGpQBZknzR53HcLXWek";
 
-async function listAvailableModels() {
-    const endpoint = `https://generativelanguage.googleapis.com/v1beta/models?key=${GEMINI_API_KEY}`;
+// モーダル表示
+changeCategoryButton.addEventListener('click', () => {
+    categorySelectionModal.classList.add('active');
+});
 
-    try {
-        const response = await fetch(endpoint);
-        const data = await response.json();
+// モーダルを閉じる
+closeModalButton.addEventListener('click', () => {
+    categorySelectionModal.classList.remove('active');
+});
 
-        if (!response.ok) {
-            console.error("Error fetching models:", data.error);
-            return;
-        }
+// モーダル内のボタン選択
+modalButtons.forEach(button => {
+    button.addEventListener('click', () => {
+        // すでに選択されているボタンがあれば、スタイルをリセット
+        modalButtons.forEach(btn => btn.classList.remove('selected'));
+        
+        // 新しいボタンに「選択済み」スタイルを追加
+        button.classList.add('selected');
+        
+        // カテゴリを更新
+        currentCategory = button.dataset.value;
+        
+        // カテゴリ名を表示する要素を更新
+        currentCategoryDisplay.innerText = `現在の相談：${categoryNames[currentCategory]}`;
 
-        console.log("=== 利用可能な全モデル ===", data.models);
+        // モーダルを閉じる
+        categorySelectionModal.classList.remove('active');
 
-        const textGenerationModels = data.models.filter(model =>
-            model.supportedGenerationMethods && model.supportedGenerationMethods.includes("generateContent")
-        );
-
-        console.log("=== テキスト生成（generateContent）に対応しているモデル ===", textGenerationModels);
-
-    } catch (error) {
-        console.error("モデルリストの取得に失敗しました:", error);
-    }
-}
-
-listAvailableModels(); // この関数を実行してコンソールに表示させます
+        // チャットにメッセージを追加
+        addMessage(`相談のカテゴリを「${categoryNames[currentCategory]}」に変更しました。`, "bot");
+    });
+});

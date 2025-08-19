@@ -1,8 +1,7 @@
 // config.js
 
 // ここに取得したGemini APIキーを貼り付けてください
-// 例: const GEMINI_API_KEY = "AIzaSy_YOUR_ACTUAL_GEMINI_API_KEY_HERE";
-// const GEMINI_API_KEY = "AIzaSyAafVcU0UyfgLvrbGpQBZknzR53HcLXWek";
+const GEMINI_API_KEY = "AIzaSyCUPuUqdRq16w3iZpcDwJOYlUucPskQ3c0";
 
 // !!! 重要 !!!
 // このファイルは絶対に公開リポジトリ（GitHubなど）に直接アップロードしないでください。

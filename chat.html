@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>新しい全肯定チャット</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* 新しい要素のスタイルを追加 */
+        #change-category-button {
+            background-color: #2b6653;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            margin-bottom: 1rem;
+            transition: background-color 0.3s ease;
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+        }
+
+        #change-category-button:hover {
+            background-color: #1e4d3f;
+        }
+
+        #category-selection-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        #category-selection-modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background-color: white;
+            padding: 2rem;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            position: relative;
+        }
+        
+        .modal-content .category-label {
+            font-size: 1.5rem;
+            color: #2b6653;
+            margin-bottom: 1.5rem;
+        }
+        
+        .modal-content .category-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .modal-content .category-buttons button {
+            background-color: #cdeedb;
+            color: #2b6653;
+            border: 2px solid #2b6653;
+            padding: 1rem 2rem;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .modal-content .category-buttons button:hover,
+        .modal-content .category-buttons button.selected {
+            background-color: #2b6653;
+            color: white;
+        }
+
+        #close-modal {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #888;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>新しい全肯定チャット</h1>
+        <p id="current-category">現在の相談：</p>
+    </header>
+
+    <main id="chat-area"></main>
+
+    <form id="chat-form">
+        <input type="text" id="user-input" placeholder="あなたの悩みを書いてください" required />
+        <button type="submit">送信</button>
+    </form>
+
+    <button id="change-category-button">お悩み種類の変更</button>
+
+    <div id="category-selection-modal">
+        <div class="modal-content">
+            <span id="close-modal">&times;</span>
+            <div class="category-label">どんなことで悩んでいますか？（HARMの法則）</div>
+            <div class="category-buttons">
+                <button class="modal-button" data-value="health">H (Health - 健康)</button>
+                <button class="modal-button" data-value="ambition">A (Ambition - 夢、将来)</button>
+                <button class="modal-button" data-value="relation">R (Relation - 人間関係)</button>
+                <button class="modal-button" data-value="money">M (Money - お金)</button>
+            </div>
+        </div>
+    </div>
+    <script src="config.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
